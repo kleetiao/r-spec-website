@@ -1,0 +1,1097 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101112" />
+    <title>R Spec Parts Marketing | Built for the Drive</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f5f4ef;
+        --muted: #a7a7a2;
+        --panel: #17191a;
+        --line: rgba(255, 255, 255, 0.12);
+        --orange: #ff5b28;
+        --lime: #d4f36a;
+        --display: "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+        --body:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: #101112;
+        color: var(--ink);
+        font-family: var(--body);
+      }
+      button,
+      a {
+        font: inherit;
+      }
+      button {
+        color: inherit;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .announcement {
+        min-height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 16px;
+        background: var(--lime);
+        color: #171913;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .topbar {
+        height: 78px;
+        padding: 0 clamp(20px, 5vw, 76px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        position: relative;
+        z-index: 5;
+        background: #101112;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 245px;
+      }
+      .brand-mark {
+        width: 39px;
+        height: 39px;
+        display: grid;
+        place-items: center;
+        background: var(--orange);
+        color: #111;
+        font: 900 19px var(--display);
+        transform: skew(-8deg);
+      }
+      .brand-name {
+        font: 900 17px/1 var(--display);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      .brand-name small {
+        display: block;
+        margin-top: 5px;
+        color: var(--muted);
+        font: 700 9px/1 var(--body);
+        letter-spacing: 0.24em;
+      }
+      .nav {
+        display: flex;
+        gap: 34px;
+        align-items: center;
+        color: #d2d1cb;
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .nav a:hover,
+      .footer-links a:hover {
+        color: var(--lime);
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .icon-button,
+      .login-button {
+        height: 40px;
+        border: 1px solid var(--line);
+        background: transparent;
+        cursor: pointer;
+      }
+      .icon-button {
+        width: 42px;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .icon-button svg {
+        width: 17px;
+      }
+      .cart-count {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        min-width: 17px;
+        height: 17px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--lime);
+        color: #111;
+        font-size: 10px;
+        font-weight: 900;
+      }
+      .login-button {
+        padding: 0 15px;
+        color: #ddd;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .login-button:hover {
+        border-color: var(--orange);
+        color: white;
+      }
+      .login-button:disabled {
+        cursor: wait;
+        opacity: 0.7;
+      }
+      .account-chip {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        padding: 5px 10px 5px 5px;
+        color: #ddd;
+        font-size: 11px;
+      }
+      .account-chip.visible {
+        display: flex;
+      }
+      .account-chip img {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .mobile-menu {
+        display: none;
+      }
+      .hero {
+        min-height: 560px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid var(--line);
+      }
+      .hero-copy {
+        padding: 90px 5vw 88px max(7vw, 36px);
+        position: relative;
+        z-index: 2;
+      }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--lime);
+        font-size: 10px;
+        font-weight: 850;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 28px;
+        height: 2px;
+        background: var(--lime);
+      }
+      h1 {
+        max-width: 670px;
+        margin: 21px 0 20px;
+        font: 900 clamp(58px, 7vw, 104px)/0.87 var(--display);
+        letter-spacing: -0.035em;
+        text-transform: uppercase;
+      }
+      h1 span {
+        color: var(--orange);
+      }
+      .hero-copy p {
+        max-width: 440px;
+        color: #a9aaa7;
+        font-size: 14px;
+        line-height: 1.8;
+      }
+      .hero-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .button-primary,
+      .button-secondary {
+        min-height: 48px;
+        padding: 0 21px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 11px;
+        font-weight: 850;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .button-primary {
+        border: 0;
+        background: var(--orange);
+        color: #111;
+      }
+      .button-primary:hover {
+        background: #ff744a;
+      }
+      .button-secondary {
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        background: transparent;
+      }
+      .button-secondary:hover {
+        border-color: var(--lime);
+      }
+      .hero-note {
+        margin-top: 48px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        color: #8b8c89;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .note-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--lime);
+        box-shadow: 0 0 14px #d4f36a88;
+      }
+      .hero-art {
+        position: relative;
+        min-height: 560px;
+        background: radial-gradient(
+          ellipse at 54% 42%,
+          #484b45 0%,
+          #272a27 30%,
+          #17191a 65%,
+          #101112 100%
+        );
+      }
+      .hero-art::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.19;
+        background-image:
+          linear-gradient(
+            135deg,
+            transparent 47%,
+            rgba(255, 255, 255, 0.12) 48%,
+            transparent 49%
+          ),
+          linear-gradient(
+            45deg,
+            transparent 47%,
+            rgba(255, 255, 255, 0.08) 48%,
+            transparent 49%
+          );
+        background-size: 54px 54px;
+        mask-image: linear-gradient(to left, #000, transparent 90%);
+      }
+      .hero-art::after {
+        content: "RS";
+        position: absolute;
+        right: 5%;
+        top: 4%;
+        color: rgba(255, 255, 255, 0.04);
+        font: 900 250px/0.9 var(--display);
+        letter-spacing: -0.1em;
+      }
+      .hero-ring {
+        width: min(36vw, 410px);
+        aspect-ratio: 1;
+        position: absolute;
+        left: 50%;
+        top: 49%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          #161819 0 29%,
+          #8a8d85 30% 32%,
+          #252827 33% 38%,
+          #0a0b0b 39% 49%,
+          #5d6059 50% 52%,
+          #151718 53% 57%,
+          #050606 58% 64%,
+          #383a36 65% 67%,
+          transparent 68%
+        );
+        box-shadow: 0 28px 80px #000b;
+      }
+      .hero-ring::before {
+        content: "";
+        position: absolute;
+        inset: 36%;
+        border-radius: 50%;
+        background: repeating-conic-gradient(
+          from 8deg,
+          #bcc0b7 0deg 3deg,
+          #363936 3deg 30deg
+        );
+        box-shadow: inset 0 0 0 8px #131515;
+      }
+      .hero-ring::after {
+        content: "";
+        position: absolute;
+        inset: 45%;
+        border: 7px solid #a7aaa1;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          #656860 0 15%,
+          #252725 16% 48%,
+          #111 50%
+        );
+      }
+      .hero-label {
+        position: absolute;
+        z-index: 2;
+        padding: 9px 12px;
+        border: 1px solid #ffffff26;
+        background: #111c;
+        font-size: 9px;
+        font-weight: 850;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+      }
+      .hero-label.one {
+        left: 10%;
+        top: 24%;
+      }
+      .hero-label.two {
+        right: 9%;
+        bottom: 23%;
+        color: var(--lime);
+      }
+      .hero-spec {
+        position: absolute;
+        left: 9%;
+        bottom: 8%;
+        color: #858783;
+        font: 700 9px/1.7 var(--body);
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+      }
+      .ticker {
+        display: flex;
+        gap: 30px;
+        overflow: hidden;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--line);
+        color: #979995;
+        white-space: nowrap;
+        font: 900 11px var(--display);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .ticker span::after {
+        content: "✳";
+        margin-left: 30px;
+        color: var(--orange);
+      }
+      .section {
+        padding: 88px clamp(22px, 7vw, 100px);
+      }
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 31px;
+      }
+      .section-kicker {
+        color: var(--orange);
+        font-size: 10px;
+        font-weight: 850;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+      h2 {
+        margin: 10px 0 0;
+        font: 900 clamp(36px, 4.5vw, 58px)/0.95 var(--display);
+        letter-spacing: -0.025em;
+        text-transform: uppercase;
+      }
+      .view-all {
+        padding-bottom: 7px;
+        border-bottom: 1px solid var(--orange);
+        font-size: 10px;
+        font-weight: 850;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .view-all:hover {
+        color: var(--lime);
+        border-color: var(--lime);
+      }
+      .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+      }
+      .filter {
+        padding: 9px 14px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: #aaa;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .filter.active,
+      .filter:hover {
+        background: var(--lime);
+        border-color: var(--lime);
+        color: #111;
+      }
+      .products {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+      .product-card {
+        min-width: 0;
+        background: var(--panel);
+        border: 1px solid #ffffff0b;
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+      .product-card:hover {
+        transform: translateY(-4px);
+        border-color: #ffffff32;
+      }
+      .product-art {
+        height: 220px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 50%, #343735, #1b1d1e 67%);
+      }
+      .product-art::after {
+        content: "R SPEC / PERFORMANCE";
+        position: absolute;
+        left: 13px;
+        top: 13px;
+        color: #7f827c;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+      }
+      .product-visual {
+        width: 142px;
+        height: 142px;
+        filter: drop-shadow(0 17px 13px #0008);
+      }
+      .product-info {
+        padding: 17px;
+      }
+      .product-type {
+        color: #8f918d;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+      }
+      .product-name {
+        min-height: 42px;
+        margin: 9px 0 15px;
+        font: 850 18px/1.15 var(--display);
+        text-transform: uppercase;
+      }
+      .product-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .price {
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .add-button {
+        width: 34px;
+        height: 34px;
+        border: 1px solid #ffffff35;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .add-button:hover {
+        background: var(--orange);
+        color: #111;
+        border-color: var(--orange);
+      }
+      .no-results {
+        grid-column: 1 / -1;
+        padding: 40px;
+        border: 1px dashed var(--line);
+        color: var(--muted);
+        text-align: center;
+      }
+      .feature-band {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--lime);
+        color: #171914;
+      }
+      .feature-copy {
+        padding: 66px clamp(22px, 7vw, 100px);
+      }
+      .feature-copy .section-kicker {
+        color: #393e2a;
+      }
+      .feature-copy h2 {
+        max-width: 570px;
+        font-size: clamp(38px, 5vw, 64px);
+      }
+      .feature-copy p {
+        max-width: 430px;
+        margin: 19px 0 24px;
+        color: #404438;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+      .feature-copy .button-primary {
+        background: #151716;
+        color: white;
+      }
+      .feature-panel {
+        min-height: 340px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+        background: #d4f36a;
+      }
+      .feature-panel::before,
+      .feature-panel::after {
+        content: "";
+        position: absolute;
+        width: 360px;
+        height: 190px;
+        border: 1px solid #34421d2b;
+        transform: rotate(-31deg);
+      }
+      .feature-panel::after {
+        width: 470px;
+        height: 260px;
+      }
+      .badge {
+        z-index: 1;
+        width: 190px;
+        height: 190px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #20251c;
+        border-radius: 50%;
+        font: 900 30px/0.95 var(--display);
+        text-align: center;
+        transform: rotate(-12deg);
+      }
+      .badge small {
+        display: block;
+        margin-top: -43px;
+        font: 800 8px var(--body);
+        letter-spacing: 0.2em;
+      }
+      .benefits {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-bottom: 1px solid var(--line);
+      }
+      .benefit {
+        padding: 28px clamp(22px, 5vw, 70px);
+        border-right: 1px solid var(--line);
+      }
+      .benefit:last-child {
+        border: 0;
+      }
+      .benefit strong {
+        display: block;
+        margin-bottom: 8px;
+        font: 900 18px var(--display);
+        text-transform: uppercase;
+      }
+      .benefit span {
+        color: #92948f;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      footer {
+        padding: 44px clamp(22px, 7vw, 100px) 28px;
+        background: #0c0d0e;
+      }
+      .footer-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 35px;
+        padding-bottom: 35px;
+      }
+      .footer-blurb {
+        max-width: 280px;
+        margin-top: 16px;
+        color: #8e908c;
+        font-size: 11px;
+        line-height: 1.7;
+      }
+      .footer-links {
+        display: flex;
+        gap: 27px;
+        color: #babbb6;
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .copyright {
+        padding-top: 17px;
+        border-top: 1px solid var(--line);
+        color: #666863;
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .toast {
+        position: fixed;
+        z-index: 10;
+        right: 22px;
+        bottom: 22px;
+        max-width: min(380px, calc(100vw - 44px));
+        padding: 14px 18px;
+        border-left: 3px solid var(--lime);
+        background: #222522;
+        color: white;
+        box-shadow: 0 12px 35px #0008;
+        font-size: 12px;
+        opacity: 0;
+        transform: translateY(12px);
+        pointer-events: none;
+        transition: 0.2s;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @media (max-width: 920px) {
+        .nav {
+          gap: 17px;
+        }
+        .hero-copy {
+          padding-left: 5vw;
+        }
+        .products {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .product-art {
+          height: 200px;
+        }
+      }
+      @media (max-width: 680px) {
+        .topbar {
+          height: 66px;
+          padding: 0 17px;
+        }
+        .brand {
+          min-width: 0;
+        }
+        .brand-mark {
+          width: 34px;
+          height: 34px;
+        }
+        .brand-name {
+          font-size: 15px;
+        }
+        .nav {
+          display: none;
+        }
+        .login-button {
+          padding: 0 9px;
+          font-size: 9px;
+        }
+        .icon-button {
+          width: 37px;
+          height: 37px;
+        }
+        .account-chip {
+          display: none !important;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .hero-copy {
+          padding: 64px 23px 45px;
+        }
+        .hero-art {
+          min-height: 310px;
+        }
+        .hero-ring {
+          width: min(70vw, 300px);
+        }
+        .hero-art::after {
+          font-size: 170px;
+        }
+        .hero-spec {
+          bottom: 7%;
+        }
+        .hero-label.one {
+          top: 15%;
+        }
+        .hero-label.two {
+          bottom: 12%;
+        }
+        .hero-note {
+          margin-top: 30px;
+        }
+        .section {
+          padding: 64px 20px;
+        }
+        .section-heading {
+          align-items: start;
+        }
+        .view-all {
+          margin-top: 4px;
+          white-space: nowrap;
+        }
+        .products {
+          gap: 9px;
+        }
+        .product-art {
+          height: 160px;
+        }
+        .product-visual {
+          width: 110px;
+          height: 110px;
+        }
+        .product-info {
+          padding: 13px;
+        }
+        .product-name {
+          font-size: 16px;
+        }
+        .feature-band {
+          grid-template-columns: 1fr;
+        }
+        .feature-copy {
+          padding: 52px 23px;
+        }
+        .feature-panel {
+          min-height: 230px;
+        }
+        .badge {
+          width: 140px;
+          height: 140px;
+          font-size: 24px;
+        }
+        .badge small {
+          margin-top: -32px;
+          font-size: 7px;
+        }
+        .benefits {
+          grid-template-columns: 1fr;
+        }
+        .benefit {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+          padding: 22px;
+        }
+        .footer-main {
+          flex-direction: column;
+        }
+        .footer-links {
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+      }
+      @media (max-width: 390px) {
+        .brand-name {
+          font-size: 13px;
+        }
+        .brand-mark {
+          width: 30px;
+          height: 30px;
+        }
+        .actions {
+          gap: 6px;
+        }
+        .login-button {
+          letter-spacing: 0;
+        }
+        .product-art {
+          height: 138px;
+        }
+      }
+    
+[hidden]{display:none!important}:focus-visible{outline:3px solid var(--lime);outline-offset:4px}
+.member{padding:60px max(6vw,22px);background:radial-gradient(ellipse at top right,#343b26,#17191a 65%)}
+.member h1{font-size:clamp(40px,6vw,76px);line-height:1;overflow-wrap:anywhere}.member-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-top:28px}.member-card{padding:28px;background:#101112;border:1px solid var(--line)}
+.member p,dialog p{color:var(--muted);font-size:14px;line-height:1.8}.member-card h2{font-size:25px;overflow-wrap:anywhere}.profile-head{display:flex;gap:20px;align-items:center}.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#343b26;display:grid;place-items:center;font-size:30px;color:var(--lime)}.success{color:var(--lime)!important}.member dt{font-size:11px;color:var(--muted);text-transform:uppercase;margin-top:25px}.member dd{margin:12px 0;font:18px monospace;overflow-wrap:anywhere}
+dialog{background:#17191a;color:var(--ink);padding:36px;border:1px solid var(--line);width:calc(100% - 32px);max-width:470px}dialog::backdrop{background:#000b;backdrop-filter:blur(5px)}dialog h2{font:900 40px var(--display);margin:24px 0 14px}.close-dialog{float:right;color:white;border:0;background:transparent;font-size:25px;cursor:pointer}@media(max-width:680px){.member-grid{grid-template-columns:1fr}.member{padding:40px 20px}}
+
+      #storeMap { width: 100%; min-height: 320px; border: 1px solid var(--line); margin-top: 20px; }
+      #location p { margin: 14px 0; color: var(--muted); }
+      #bagItems { padding-left: 0; list-style: none; }
+      #bagItems li { padding: 10px 0; border-bottom: 1px solid var(--line); }
+      #bagItems label { display: block; margin-top: 6px; }
+      #bagItems input { width: 5em; margin-left: 8px; }
+      #checkoutButton:disabled { opacity: .55; cursor: default; }
+      #paymentNotice { padding: 16px max(6vw, 22px); background: #343b26; }
+    </style>
+  </head>
+  <body>
+    <div class="announcement">
+      Performance parts for people who love the drive
+      <span aria-hidden="true">&nbsp;✳</span>
+    </div>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="R Spec Parts Marketing home">
+        <span class="brand-mark">R/S</span>
+        <span class="brand-name">R Spec Parts<small>Marketing</small></span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#shop">Shop parts</a><a href="#about">Our standard</a
+        ><a href="#location">Find us</a>
+      </nav>
+      <div class="actions">
+        <div id="accountChip" class="account-chip" aria-live="polite">
+          <img id="accountPicture" alt="" /><span id="accountName"></span>
+        </div>
+        <button
+          id="loginButton"
+          class="login-button"
+          type="button"
+          
+        >
+          Log in
+        </button>
+        <button
+          class="icon-button"
+          type="button"
+          aria-label="Shopping bag"
+          id="bagButton"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <path d="M5 8h14l1 12H4L5 8Z" />
+            <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+          </svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <p id="paymentNotice" role="status" hidden></p>
+      <button id="retryPayment" class="button-secondary" type="button" hidden>Retry payment confirmation</button>
+      <section class="member" id="member" hidden aria-labelledby="welcomeTitle">
+        <div class="eyebrow">Your R Spec garage</div>
+        <h1 id="welcomeTitle" tabindex="-1">Welcome back.</h1>
+        <div class="member-grid">
+          <article class="member-card">
+            <div class="profile-head">
+              <img class="avatar" id="profilePicture" alt="" hidden>
+              <span class="avatar" id="profileInitial" aria-hidden="true"></span>
+              <div><h2 id="profileName"></h2><p class="success">Signed in with GitHub</p></div>
+            </div>
+            <p><button type="button" class="button-secondary" id="logoutButton">Log out</button></p>
+            <p id="memberStatus" role="status"></p>
+          </article>
+          <article class="member-card">
+            <div class="section-kicker">Ready for your next upgrade?</div>
+            <h2>Make it your build.</h2>
+            <p>Browse the collection and add your favorite parts to the bag.</p>
+            <a class="button-primary" href="#shop">Browse parts ↗</a>
+          </article>
+        </div>
+      </section>
+      <section class="hero" id="home">
+        <div class="hero-copy">
+          <div class="eyebrow">Made for the road ahead</div>
+          <h1>Built to<br />go <span>further.</span></h1>
+          <p>
+            Performance parts, thoughtful upgrades, and the details that make
+            your build yours. Find your next favorite part at R Spec.
+          </p>
+          <div class="hero-buttons">
+            <a class="button-primary" href="#shop"
+              >Explore the shop <span aria-hidden="true">↗</span></a
+            ><a class="button-secondary" href="#about">Why R Spec</a>
+          </div>
+          <div class="hero-note">
+            <span class="note-dot"></span> Your build. Your standard. Your road.
+          </div>
+        </div>
+        <div
+          class="hero-art"
+          aria-label="Stylized performance wheel illustration"
+          role="img"
+        >
+          <span class="hero-label one">Performance series / 01</span>
+          <div class="hero-ring"></div>
+          <span class="hero-label two">Engineered for enthusiasts</span>
+          <div class="hero-spec">
+            R Spec Parts Marketing<br />Performance • Style • Precision
+          </div>
+        </div>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <span>Drive your own build</span><span>Parts with purpose</span
+        ><span>Made for the road ahead</span><span>Drive your own build</span>
+      </div>
+
+      <section class="section" id="shop">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">The R Spec edit</div>
+            <h2>Shop the parts</h2>
+          </div>
+          <a class="view-all" href="#contact"
+            >Need a hand? <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div class="filters" aria-label="Filter products">
+          <button class="filter active" type="button" data-filter="all">
+            All parts</button
+          ><button class="filter" type="button" data-filter="wheels">
+            Wheels</button
+          ><button class="filter" type="button" data-filter="exterior">
+            Exterior</button
+          ><button class="filter" type="button" data-filter="performance">
+            Performance
+          </button>
+        </div>
+        <div class="products" id="products"></div>
+      </section>
+
+      <section class="feature-band" id="about">
+        <div class="feature-copy">
+          <div class="section-kicker">For every kind of car person</div>
+          <h2>Good parts.<br />Good people.<br />Good miles.</h2>
+          <p>
+            R Spec Parts Marketing is here for the people behind the wheel. Tell
+            us what you drive and what you’re building—we’ll help you find parts
+            that fit your vision.
+          </p>
+          <a class="button-primary" href="#contact"
+            >Talk to our team <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div class="feature-panel" aria-label="R Spec road-ready badge graphic">
+          <div class="badge">
+            R SPEC<br />ROAD<br />READY<small>PARTS MARKETING</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="benefits" aria-label="Shop benefits">
+        <div class="benefit">
+          <strong>Enthusiast first</strong
+          ><span
+            >Friendly help for your next upgrade and every question along the
+            way.</span
+          >
+        </div>
+        <div class="benefit">
+          <strong>Parts with purpose</strong
+          ><span
+            >A curated selection for builds that feel personal and perform with
+            intent.</span
+          >
+        </div>
+        <div class="benefit">
+          <strong>Here for your build</strong
+          ><span
+            >From first mod to full project, we’re glad to be part of the
+            journey.</span
+          >
+        </div>
+      </section>
+      <section class="section" id="location" aria-labelledby="locationTitle">
+        <div class="section-heading">
+          <div><div class="section-kicker">Visit R Spec</div><h2 id="locationTitle">Find the shop</h2></div>
+        </div>
+        <p id="mapStatus" role="status">Loading shop location…</p>
+        <a class="button-secondary" id="directionsLink" target="_blank" rel="noopener" hidden>Open map ↗</a>
+        <iframe id="storeMap" title="Bacolod area on OpenStreetMap" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
+      </section>
+    </main>
+
+    <footer id="contact">
+      <div class="footer-main">
+        <div>
+          <a class="brand" href="#home"
+            ><span class="brand-mark">R/S</span
+            ><span class="brand-name"
+              >R Spec Parts<small>Marketing</small></span
+            ></a
+          >
+          <p class="footer-blurb">
+            Parts for the cars we love and the roads that bring us together. Get
+            in touch to talk about your build.
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href="#shop">Shop</a><a href="#about">About R Spec</a
+          ><a href="#about">Our story</a>
+        </div>
+      </div>
+      <div class="copyright">
+        © <span id="year"></span> R Spec Parts Marketing · Built for the drive
+      </div>
+    </footer>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="loginDialog" aria-labelledby="loginTitle">
+      <button class="close-dialog" type="button" aria-label="Close login" onclick="this.closest('dialog').close()">×</button>
+      <div class="section-kicker">R Spec members</div>
+      <h2 id="loginTitle">Your build.<br>Your garage.</h2>
+      <p>Sign in with GitHub to open your member profile.</p>
+      <a id="githubLogin" class="button-primary" href="/auth/github" hidden>Continue with GitHub</a>
+      <p id="loginStatus" role="status">Loading member login…</p>
+    </dialog>
+    <dialog id="bagDialog" aria-labelledby="bagTitle">
+      <button class="close-dialog" type="button" aria-label="Close bag" onclick="this.closest('dialog').close()">×</button>
+      <div class="section-kicker">R Spec shop</div>
+      <h2 id="bagTitle">Your bag</h2>
+      <ul id="bagItems"></ul>
+      <p id="bagTotal"></p>
+      <button class="button-primary" type="button" id="checkoutButton" disabled>Continue to PayPal Sandbox</button>
+      <p id="bagStatus" role="status"></p>
+    </dialog>
+    <script type="module" src="/store.js"></script>
+  </body>
+</html>
