@@ -46,6 +46,9 @@ const bagDialog = byId("bagDialog");
 const loginDialog = byId("loginDialog");
 const checkoutButton = byId("checkoutButton");
 let profile;
+let googleLoginEnabled = false;
+let googleLibrary;
+let preparingGoogleLogin = false;
 let checkoutEnabled = false;
 let openingCheckout = false;
 const cart = new Map();
@@ -177,13 +180,64 @@ function showProfile(user) {
   }
 }
 
-byId("loginButton").addEventListener("click", () => {
+function loadGoogleLibrary() {
+  googleLibrary ??= new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = () => {
+      script.remove();
+      googleLibrary = undefined;
+      reject(new Error("Google sign-in could not load. Check your connection and try again."));
+    };
+    document.head.append(script);
+  });
+  return googleLibrary;
+}
+
+async function signInWithGoogle({ credential }) {
+  const status = byId("loginStatus");
+  status.textContent = "Verifying your Google sign-in…";
+  try {
+    const { profile: member } = await api("/api/login/google", { credential });
+    showProfile(member);
+    loginDialog.close();
+    byId("member").scrollIntoView();
+    byId("welcomeTitle").focus({ preventScroll: true });
+    showToast("Welcome to your R Spec garage.");
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+byId("loginButton").addEventListener("click", async () => {
   if (profile) {
     byId("member").scrollIntoView();
     byId("welcomeTitle").focus({ preventScroll: true });
     return;
   }
   loginDialog.showModal();
+  if (!googleLoginEnabled || preparingGoogleLogin) return;
+
+  const status = byId("loginStatus");
+  const button = byId("googleLogin");
+  preparingGoogleLogin = true;
+  status.textContent = "Loading Google sign-in…";
+  button.replaceChildren();
+  try {
+    const [{ clientId, nonce }] = await Promise.all([
+      api("/api/login/google"),
+      loadGoogleLibrary(),
+    ]);
+    window.google.accounts.id.initialize({ client_id: clientId, nonce, callback: signInWithGoogle });
+    window.google.accounts.id.renderButton(button, { theme: "outline", size: "large" });
+    status.textContent = "";
+  } catch (error) {
+    status.textContent = error.message;
+  } finally {
+    preparingGoogleLogin = false;
+  }
 });
 
 byId("logoutButton").addEventListener("click", async () => {
@@ -224,7 +278,6 @@ const returnParams = new URL(location.href).searchParams;
 const paypalResult = returnParams.get("paypal");
 const orderId = returnParams.get("token");
 const reference = returnParams.get("reference");
-const loginResult = returnParams.get("login");
 let capturePending = false;
 
 async function confirmPayment() {
@@ -268,25 +321,15 @@ saveCart();
 renderProducts();
 api("/api/config").then(config => {
   checkoutEnabled = config.checkoutEnabled;
+  googleLoginEnabled = config.loginEnabled;
   renderBag();
   showProfile(config.profile);
-  byId("githubLogin").hidden = !config.loginEnabled;
-  byId("loginStatus").textContent = config.loginEnabled
-    ? "Continue with your GitHub account to open your garage."
+  byId("loginStatus").textContent = googleLoginEnabled
+    ? "Open the login dialog to sign in with Google."
     : "Member login is being prepared.";
   setupMap(config);
   if (paypalResult === "approved" && orderId && reference) confirmPayment();
   else if (paypalResult === "cancelled") showNotice("Checkout cancelled. Your bag is ready when you are.");
-  else if (loginResult === "success" && config.profile) showToast("Welcome to your R Spec garage.");
-  else if (["expired", "cancelled", "failed", "setup"].includes(loginResult)) {
-    const messages = {
-      expired: "Your login request expired. Please try again.",
-      cancelled: "GitHub login cancelled. You can try again.",
-      failed: "GitHub login could not be verified. Please try again.",
-      setup: "Member login is being prepared.",
-    };
-    showNotice(messages[loginResult]);
-  }
 }).catch(() => {
   byId("mapStatus").textContent = "Shop information is temporarily unavailable. Please reload.";
 });

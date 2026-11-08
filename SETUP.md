@@ -4,7 +4,7 @@ The R-Spec project now uses these three services.
 
 | Feature | API/service | What you need |
 | --- | --- | --- |
-| Member login | GitHub OAuth and user API | A GitHub account and an OAuth app |
+| Member login | Google Identity Services | A Google account and a Web application OAuth client ID |
 | Shop map | OpenStreetMap embed/tile service | Internet access |
 | Online payment demonstration | PayPal Orders v2 Sandbox | A PayPal developer account and sandbox app |
 
@@ -14,13 +14,11 @@ PayPal Sandbox simulates payments between test accounts. [PayPal Sandbox documen
 
 1. Open the **r-spec-api** folder.
 2. In the left Explorer panel, click **.env**.
-3. The new GitHub and PayPal setting names have been added if your settings file already existed.
-4. If you need a fresh file, copy **.env.example** and name the copy exactly **.env**.
-5. Fill in the four values using sections 2 and 3.
+3. If you need a fresh file, copy **.env.example** and name the copy exactly **.env**.
+4. Fill in the Google client ID and both PayPal settings using sections 2 and 3.
 
 ```dotenv
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
 PAYPAL_SANDBOX_CLIENT_ID=
 PAYPAL_SANDBOX_CLIENT_SECRET=
 SHOP_ADDRESS="12 Rizal St., Bacolod"
@@ -30,32 +28,20 @@ PORT=3000
 PUBLIC_ORIGIN=
 ```
 
-Save with **Ctrl+S** after each change. Keep client secrets in this local file and cover them in screenshots. The app uses the new setting names to connect to its current services.
+Save with **Ctrl+S** after each change. Keep your PayPal secret in this local file and cover it in screenshots.
 
-## 2. Make GitHub login work
+## 2. Make Google login work
 
-1. Sign in to [GitHub](https://github.com/). Create an account if needed.
-2. Click your profile picture, then **Settings**.
-3. Scroll down the left menu and open **Developer settings**.
-4. Choose **OAuth Apps**.
-5. Click **New OAuth App** or **Register a new application**.
-6. Complete the form with the following values.
+1. Sign in to [Google Cloud Console](https://console.cloud.google.com/) and select your R-Spec project or create one.
+2. Open **Google Auth Platform**. Complete **Branding** and **Audience** if prompted. Choose **External** for personal Google accounts and add your account under **Test users** if that section is available.
+3. Go to **Clients**. Open your existing **Web application** client or select **Create client → Web application**.
+4. Add `http://localhost` and `http://localhost:3000` under **Authorized JavaScript origins** and save.
+5. Copy the **Client ID** ending in `.apps.googleusercontent.com` into `GOOGLE_CLIENT_ID=` in your local `.env`. If your settings already contain that client's ID, keep it.
+6. Save and follow section 5 to start the website.
 
-| GitHub field | Enter |
-| --- | --- |
-| Application name | R Spec Website |
-| Homepage URL | http://localhost:3000 |
-| Application description | R Spec classroom website |
-| Authorization callback URL | http://localhost:3000/auth/github/callback |
+R-Spec uses the Google sign-in button's popup and verifies the ID token on the server. The Google setting for this flow is the web Client ID. [Google sign-in setup](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid)
 
-7. Click **Register application**. The web login flow uses the callback URL above.
-8. On the app page, copy **Client ID** into **GITHUB_CLIENT_ID** in your local **.env**.
-9. Click **Generate a new client secret** and complete GitHub's verification if prompted.
-10. Copy it into **GITHUB_CLIENT_SECRET** and save.
-
-[GitHub registration instructions](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
-
-**Test it.** Restart the site using section 5. Click **Log in → Continue with GitHub**. Complete GitHub's authorization page. You should return to **My garage** with your name. Reload to check the session, then click **Log out**.
+**Test it.** Open the site at **http://localhost:3000** in your browser. Click **Log in → Sign in with Google** and choose your account. **My garage** should show your name. Reload to check the session, then click **Log out**.
 
 ## 3. Make PayPal test checkout work
 
@@ -111,24 +97,26 @@ The embedded map displays OpenStreetMap attribution and uses browser caching. Ke
 1. In VS Code, choose **Terminal → New Terminal**.
 2. Confirm the terminal is opened in the **r-spec-api** folder.
 3. If you already have the server running in a terminal, click that terminal and press **Ctrl+C**. Confirm with **Y** if prompted.
-4. Enter the following command.
+4. Run `npm.cmd ci` when setting up this version to install the login library.
+5. Enter the following command.
 
 ```powershell
 npm.cmd start
 ```
 
-5. Wait for **R-Spec is ready at http://localhost:3000**.
-6. Open [your website](http://localhost:3000/), refresh, and leave the terminal running.
+6. Wait for **R-Spec is ready at http://localhost:3000**.
+7. Open [your website](http://localhost:3000/), refresh, and leave the terminal running.
 
-Repeat after every change to **.env**. This version runs with Node.js 22 or newer and its built-in libraries.
+Save **.env** and restart the server after each settings change. This version runs with Node.js 22 or newer.
 
 ## 6. Common problems
 
 | Problem | What to check |
 | --- | --- |
-| Member login is being prepared | Fill in both GitHub settings, save, and restart. |
-| GitHub callback mismatch | In the OAuth app, set the callback to **http://localhost:3000/auth/github/callback** and open the site at **http://localhost:3000**. |
-| Login request expired | Try signing in again. A request lasts ten minutes. |
+| Member login is being prepared | Fill in **GOOGLE_CLIENT_ID**, save, and restart. |
+| Google reports an origin mismatch | Add **http://localhost:3000** to the web client's authorized JavaScript origins and open that exact address. |
+| Google denies access to your account | Check the OAuth app's audience and test users. |
+| Login request expired | Close the login dialog and open it again. A request lasts ten minutes. |
 | Online checkout is being prepared | Fill in both PayPal Sandbox settings, save, and restart. |
 | Provider could not complete the request | Check that both PayPal credentials come from the same Sandbox app and that the computer has internet access. |
 | Buyer cannot sign in | Use the generated Personal sandbox account credentials from the Developer Dashboard. |
@@ -136,11 +124,11 @@ Repeat after every change to **.env**. This version runs with Node.js 22 or newe
 | Checkout session expired after restart | Check sandbox activity to see whether a payment completed. Start a new checkout for a fresh demonstration. |
 | Map shows Bacolod without a shop marker | Enter both verified shop coordinates in the settings. |
 | EADDRINUSE / port 3000 in use | Stop the other running copy, then start again. |
-| You use a different host or port | Set **PUBLIC_ORIGIN** to the exact origin you open and update the GitHub OAuth app's homepage and callback accordingly. |
+| You use a different host or port | Set **PUBLIC_ORIGIN** to the exact origin you open and add that origin in the Google web client's settings. |
 
 ## 7. Presentation steps
 
-1. Explain **GitHub OAuth/user API** and demonstrate signing in.
+1. Explain **Google Identity Services** and demonstrate signing in.
 2. Explain **OpenStreetMap embed/tile service**, then show the map and address.
 3. Explain **PayPal Orders v2**, then create and approve a sandbox payment.
 4. Show the confirmed order ID after PayPal returns.

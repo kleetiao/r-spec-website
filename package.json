@@ -4,5 +4,5 @@
   "type": "module",
   "scripts": { "start": "node --env-file-if-exists=.env server.mjs" },
   "engines": { "node": ">=22" },
-  "dependencies": {}
+  "dependencies": { "google-auth-library": "^10.9.1" }
 }

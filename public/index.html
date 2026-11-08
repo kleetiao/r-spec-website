@@ -849,21 +849,141 @@
           height: 138px;
         }
       }
-    
-[hidden]{display:none!important}:focus-visible{outline:3px solid var(--lime);outline-offset:4px}
-.member{padding:60px max(6vw,22px);background:radial-gradient(ellipse at top right,#343b26,#17191a 65%)}
-.member h1{font-size:clamp(40px,6vw,76px);line-height:1;overflow-wrap:anywhere}.member-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-top:28px}.member-card{padding:28px;background:#101112;border:1px solid var(--line)}
-.member p,dialog p{color:var(--muted);font-size:14px;line-height:1.8}.member-card h2{font-size:25px;overflow-wrap:anywhere}.profile-head{display:flex;gap:20px;align-items:center}.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#343b26;display:grid;place-items:center;font-size:30px;color:var(--lime)}.success{color:var(--lime)!important}.member dt{font-size:11px;color:var(--muted);text-transform:uppercase;margin-top:25px}.member dd{margin:12px 0;font:18px monospace;overflow-wrap:anywhere}
-dialog{background:#17191a;color:var(--ink);padding:36px;border:1px solid var(--line);width:calc(100% - 32px);max-width:470px}dialog::backdrop{background:#000b;backdrop-filter:blur(5px)}dialog h2{font:900 40px var(--display);margin:24px 0 14px}.close-dialog{float:right;color:white;border:0;background:transparent;font-size:25px;cursor:pointer}@media(max-width:680px){.member-grid{grid-template-columns:1fr}.member{padding:40px 20px}}
 
-      #storeMap { width: 100%; min-height: 320px; border: 1px solid var(--line); margin-top: 20px; }
-      #location p { margin: 14px 0; color: var(--muted); }
-      #bagItems { padding-left: 0; list-style: none; }
-      #bagItems li { padding: 10px 0; border-bottom: 1px solid var(--line); }
-      #bagItems label { display: block; margin-top: 6px; }
-      #bagItems input { width: 5em; margin-left: 8px; }
-      #checkoutButton:disabled { opacity: .55; cursor: default; }
-      #paymentNotice { padding: 16px max(6vw, 22px); background: #343b26; }
+      [hidden] {
+        display: none !important;
+      }
+      :focus-visible {
+        outline: 3px solid var(--lime);
+        outline-offset: 4px;
+      }
+      .member {
+        padding: 60px max(6vw, 22px);
+        background: radial-gradient(ellipse at top right, #343b26, #17191a 65%);
+      }
+      .member h1 {
+        font-size: clamp(40px, 6vw, 76px);
+        line-height: 1;
+        overflow-wrap: anywhere;
+      }
+      .member-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 24px;
+        margin-top: 28px;
+      }
+      .member-card {
+        padding: 28px;
+        background: #101112;
+        border: 1px solid var(--line);
+      }
+      .member p,
+      dialog p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+      }
+      .member-card h2 {
+        font-size: 25px;
+        overflow-wrap: anywhere;
+      }
+      .profile-head {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+      .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #343b26;
+        display: grid;
+        place-items: center;
+        font-size: 30px;
+        color: var(--lime);
+      }
+      .success {
+        color: var(--lime) !important;
+      }
+      .member dt {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-top: 25px;
+      }
+      .member dd {
+        margin: 12px 0;
+        font: 18px monospace;
+        overflow-wrap: anywhere;
+      }
+      dialog {
+        background: #17191a;
+        color: var(--ink);
+        padding: 36px;
+        border: 1px solid var(--line);
+        width: calc(100% - 32px);
+        max-width: 470px;
+      }
+      dialog::backdrop {
+        background: #000b;
+        backdrop-filter: blur(5px);
+      }
+      dialog h2 {
+        font: 900 40px var(--display);
+        margin: 24px 0 14px;
+      }
+      .close-dialog {
+        float: right;
+        color: white;
+        border: 0;
+        background: transparent;
+        font-size: 25px;
+        cursor: pointer;
+      }
+      @media (max-width: 680px) {
+        .member-grid {
+          grid-template-columns: 1fr;
+        }
+        .member {
+          padding: 40px 20px;
+        }
+      }
+
+      #storeMap {
+        width: 100%;
+        min-height: 320px;
+        border: 1px solid var(--line);
+        margin-top: 20px;
+      }
+      #location p {
+        margin: 14px 0;
+        color: var(--muted);
+      }
+      #bagItems {
+        padding-left: 0;
+        list-style: none;
+      }
+      #bagItems li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      #bagItems label {
+        display: block;
+        margin-top: 6px;
+      }
+      #bagItems input {
+        width: 5em;
+        margin-left: 8px;
+      }
+      #checkoutButton:disabled {
+        opacity: 0.55;
+        cursor: default;
+      }
+      #paymentNotice {
+        padding: 16px max(6vw, 22px);
+        background: #343b26;
+      }
     </style>
   </head>
   <body>
@@ -884,12 +1004,7 @@ dialog{background:#17191a;color:var(--ink);padding:36px;border:1px solid var(--l
         <div id="accountChip" class="account-chip" aria-live="polite">
           <img id="accountPicture" alt="" /><span id="accountName"></span>
         </div>
-        <button
-          id="loginButton"
-          class="login-button"
-          type="button"
-          
-        >
+        <button id="loginButton" class="login-button" type="button">
           Log in
         </button>
         <button
@@ -915,18 +1030,31 @@ dialog{background:#17191a;color:var(--ink);padding:36px;border:1px solid var(--l
 
     <main>
       <p id="paymentNotice" role="status" hidden></p>
-      <button id="retryPayment" class="button-secondary" type="button" hidden>Retry payment confirmation</button>
+      <button id="retryPayment" class="button-secondary" type="button" hidden>
+        Retry payment confirmation
+      </button>
       <section class="member" id="member" hidden aria-labelledby="welcomeTitle">
         <div class="eyebrow">Your R Spec garage</div>
         <h1 id="welcomeTitle" tabindex="-1">Welcome back.</h1>
         <div class="member-grid">
           <article class="member-card">
             <div class="profile-head">
-              <img class="avatar" id="profilePicture" alt="" hidden>
-              <span class="avatar" id="profileInitial" aria-hidden="true"></span>
-              <div><h2 id="profileName"></h2><p class="success">Signed in with GitHub</p></div>
+              <img class="avatar" id="profilePicture" alt="" hidden />
+              <span
+                class="avatar"
+                id="profileInitial"
+                aria-hidden="true"
+              ></span>
+              <div>
+                <h2 id="profileName"></h2>
+                <p class="success">Signed in with Google</p>
+              </div>
             </div>
-            <p><button type="button" class="button-secondary" id="logoutButton">Log out</button></p>
+            <p>
+              <button type="button" class="button-secondary" id="logoutButton">
+                Log out
+              </button>
+            </p>
             <p id="memberStatus" role="status"></p>
           </article>
           <article class="member-card">
@@ -1042,12 +1170,28 @@ dialog{background:#17191a;color:var(--ink);padding:36px;border:1px solid var(--l
       </section>
       <section class="section" id="location" aria-labelledby="locationTitle">
         <div class="section-heading">
-          <div><div class="section-kicker">Visit R Spec</div><h2 id="locationTitle">Find the shop</h2></div>
+          <div>
+            <div class="section-kicker">Visit R Spec</div>
+            <h2 id="locationTitle">Find the shop</h2>
+          </div>
         </div>
         <p id="mapStatus" role="status">Loading shop location…</p>
-        <a class="button-secondary" id="directionsLink" target="_blank" rel="noopener" hidden>Open map ↗</a>
-        <iframe id="storeMap" title="Bacolod area on OpenStreetMap" loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
+        <a
+          class="button-secondary"
+          id="directionsLink"
+          target="_blank"
+          rel="noopener"
+          hidden
+          >Open map ↗</a
+        >
+        <iframe
+          id="storeMap"
+          title="Bacolod area on OpenStreetMap"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+          hidden
+        ></iframe>
       </section>
     </main>
 
@@ -1076,20 +1220,36 @@ dialog{background:#17191a;color:var(--ink);padding:36px;border:1px solid var(--l
     </footer>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <dialog id="loginDialog" aria-labelledby="loginTitle">
-      <button class="close-dialog" type="button" aria-label="Close login" onclick="this.closest('dialog').close()">×</button>
+      <button
+        class="close-dialog"
+        type="button"
+        aria-label="Close login"
+        onclick="this.closest('dialog').close()"
+      >
+        ×
+      </button>
       <div class="section-kicker">R Spec members</div>
-      <h2 id="loginTitle">Your build.<br>Your garage.</h2>
-      <p>Sign in with GitHub to open your member profile.</p>
-      <a id="githubLogin" class="button-primary" href="/auth/github" hidden>Continue with GitHub</a>
+      <h2 id="loginTitle">Your build.<br />Your garage.</h2>
+      <p>Sign in with Google to open your member profile.</p>
+      <div id="googleLogin"></div>
       <p id="loginStatus" role="status">Loading member login…</p>
     </dialog>
     <dialog id="bagDialog" aria-labelledby="bagTitle">
-      <button class="close-dialog" type="button" aria-label="Close bag" onclick="this.closest('dialog').close()">×</button>
+      <button
+        class="close-dialog"
+        type="button"
+        aria-label="Close bag"
+        onclick="this.closest('dialog').close()"
+      >
+        ×
+      </button>
       <div class="section-kicker">R Spec shop</div>
       <h2 id="bagTitle">Your bag</h2>
       <ul id="bagItems"></ul>
       <p id="bagTotal"></p>
-      <button class="button-primary" type="button" id="checkoutButton" disabled>Continue to PayPal Sandbox</button>
+      <button class="button-primary" type="button" id="checkoutButton" disabled>
+        Continue to PayPal Sandbox
+      </button>
       <p id="bagStatus" role="status"></p>
     </dialog>
     <script type="module" src="/store.js"></script>

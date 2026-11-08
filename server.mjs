@@ -1,16 +1,17 @@
 import { createServer } from "node:http";
-import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { OAuth2Client } from "google-auth-library";
 import { products } from "./public/products.js";
 
 const port = Number(process.env.PORT || 3000);
 const origin = new URL(process.env.PUBLIC_ORIGIN || "http://localhost:" + port).origin;
 const secure = origin.startsWith("https:") ? "; Secure" : "";
-const githubId = process.env.GITHUB_CLIENT_ID?.trim() || "";
-const githubSecret = process.env.GITHUB_CLIENT_SECRET?.trim() || "";
+const googleId = process.env.GOOGLE_CLIENT_ID?.trim() || "";
+const google = new OAuth2Client(googleId);
 const paypalId = process.env.PAYPAL_SANDBOX_CLIENT_ID?.trim() || "";
 const paypalSecret = process.env.PAYPAL_SANDBOX_CLIENT_SECRET?.trim() || "";
-const loginEnabled = Boolean(githubId && githubSecret);
+const loginEnabled = Boolean(googleId);
 const checkoutEnabled = Boolean(paypalId && paypalSecret);
 const address = process.env.SHOP_ADDRESS?.trim() || "12 Rizal St., Bacolod";
 const latitude = Number(process.env.SHOP_LATITUDE);
@@ -49,11 +50,6 @@ function readCookie(req, name) {
 function json(res, status, data) {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
   res.end(JSON.stringify(data));
-}
-
-function redirect(res, url) {
-  res.writeHead(303, { Location: url, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" });
-  res.end();
 }
 
 async function readJson(req) {
@@ -172,6 +168,7 @@ createServer(async (req, res) => {
       res.writeHead(200, {
         "Content-Type": type, "X-Content-Type-Options": "nosniff",
         "Cache-Control": "no-cache", "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
       });
       return res.end(bytes);
     }
@@ -189,56 +186,13 @@ createServer(async (req, res) => {
       });
     }
 
-    if (req.method === "GET" && path === "/auth/github") {
-      if (!loginEnabled) return redirect(res, "/?login=setup");
-      const state = randomUUID();
-      const verifier = randomBytes(32).toString("base64url");
-      authRequests.set(state, { verifier, expires: Date.now() + 600_000 });
-      cookie(res, "rspec_oauth_state", state, 600);
-      const authorization = new URL("https://github.com/login/oauth/authorize");
-      authorization.search = new URLSearchParams({
-        client_id: githubId, redirect_uri: origin + "/auth/github/callback",
-        state, code_challenge: createHash("sha256").update(verifier).digest("base64url"),
-        code_challenge_method: "S256",
-      });
-      return redirect(res, authorization.href);
-    }
-
-    if (req.method === "GET" && path === "/auth/github/callback") {
-      const state = url.searchParams.get("state");
-      const request = authRequests.get(state);
-      if (!request || request.expires <= Date.now() || readCookie(req, "rspec_oauth_state") !== state) {
-        return redirect(res, "/?login=expired");
-      }
-      authRequests.delete(state);
-      cookie(res, "rspec_oauth_state", "", 0);
-      if (url.searchParams.has("error")) return redirect(res, "/?login=cancelled");
-      try {
-        const token = await upstream("https://github.com/login/oauth/access_token", {
-          method: "POST",
-          headers: { Accept: "application/json", "Content-Type": "application/json" },
-          body: JSON.stringify({
-            client_id: githubId, client_secret: githubSecret, code: url.searchParams.get("code"),
-            redirect_uri: origin + "/auth/github/callback", code_verifier: request.verifier,
-          }),
-        });
-        if (!token.access_token) throw new Error("GitHub did not authorize this login.");
-        const user = await upstream("https://api.github.com/user", {
-          headers: { Accept: "application/vnd.github+json", Authorization: "Bearer " + token.access_token, "User-Agent": "R-Spec-Classroom-Website" },
-        });
-        if (!user.id || !user.login) throw new Error("GitHub profile is unavailable.");
-        const profile = {
-          name: user.name || user.login,
-          picture: /^https:\/\/avatars\.githubusercontent\.com\//i.test(user.avatar_url || "") ? user.avatar_url : "",
-        };
-        sessions.delete(sessionId);
-        const newId = randomUUID();
-        sessions.set(newId, { profile, expires: Date.now() + sessionAge * 1000 });
-        cookie(res, "rspec_session", newId, sessionAge);
-        return redirect(res, "/?login=success#member");
-      } catch {
-        return redirect(res, "/?login=failed");
-      }
+    if (req.method === "GET" && path === "/api/login/google") {
+      if (!loginEnabled) return json(res, 503, { error: "Google login needs a web client ID." });
+      authRequests.delete(readCookie(req, "rspec_google_nonce"));
+      const nonce = randomUUID();
+      authRequests.set(nonce, { expires: Date.now() + 600_000 });
+      cookie(res, "rspec_google_nonce", nonce, 600);
+      return json(res, 200, { clientId: googleId, nonce });
     }
 
     if (req.method !== "POST") return json(res, 404, { error: "Page not found." });
@@ -252,6 +206,40 @@ createServer(async (req, res) => {
     let body;
     try { body = await readJson(req); }
     catch { return json(res, 400, { error: "Invalid request." }); }
+
+    if (path === "/api/login/google") {
+      if (!loginEnabled) return json(res, 503, { error: "Google login needs a web client ID." });
+      const nonce = readCookie(req, "rspec_google_nonce");
+      const request = authRequests.get(nonce);
+      if (!request || request.expires <= Date.now()) {
+        return json(res, 401, { error: "Your login request expired. Close the dialog and try again." });
+      }
+      if (typeof body?.credential !== "string" || !body.credential) {
+        return json(res, 400, { error: "Google did not send a sign-in credential." });
+      }
+
+      let user;
+      try {
+        const ticket = await google.verifyIdToken({ idToken: body.credential, audience: googleId });
+        user = ticket.getPayload();
+      } catch {
+        return json(res, 401, { error: "Google login could not be verified. Please try again." });
+      }
+      if (!user?.sub || user.nonce !== nonce || request.expires <= Date.now() || !authRequests.delete(nonce)) {
+        return json(res, 401, { error: "Your login request expired. Close the dialog and try again." });
+      }
+
+      const profile = {
+        name: user.name || "R-Spec member",
+        picture: /^https:\/\/[^/]+\.googleusercontent\.com\//i.test(user.picture || "") ? user.picture : "",
+      };
+      sessions.delete(sessionId);
+      const newId = randomUUID();
+      sessions.set(newId, { profile, expires: Date.now() + sessionAge * 1000 });
+      cookie(res, "rspec_session", newId, sessionAge);
+      cookie(res, "rspec_google_nonce", "", 0);
+      return json(res, 200, { profile });
+    }
 
     if (path === "/api/checkout") {
       const items = cartItems(body?.items);

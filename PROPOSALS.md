@@ -6,7 +6,7 @@ Each set contains three different integrations. Compare the chosen set against p
 
 This set is implemented.
 
-1. **GitHub OAuth and user API** signs customers in and displays their member profile. [GitHub documentation](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
+1. **Google Identity Services** signs customers in with a Google account and displays their member profile after the server verifies their sign-in. [Google sign-in documentation](https://developers.google.com/identity/gsi/web/guides/overview)
 2. **OpenStreetMap embed/tile service** displays an interactive shop-area map with attribution. Verified coordinates add a shop marker. [OpenStreetMap policy](https://operations.osmfoundation.org/policies/tiles/)
 3. **PayPal Orders v2 API** creates and captures sandbox checkout payments for selected parts. [PayPal documentation](https://developer.paypal.com/api/orders/v2)
 
